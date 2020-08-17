@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/provider_check.dart';
 import 'package:todo_app/screens/todo_screen.dart';
 
 void main() {
@@ -10,7 +11,7 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: TodoScreen(),
+      home: ProviderCheck(),
     );
   }
 }

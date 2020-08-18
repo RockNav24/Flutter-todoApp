@@ -3,7 +3,22 @@ import 'package:provider/provider.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/models/task_data.dart';
 
-class TodoList extends StatelessWidget {
+class TodoList extends StatefulWidget {
+  @override
+  _TodoListState createState() => _TodoListState();
+}
+
+class _TodoListState extends State<TodoList> {
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  Future<void> getData() async {
+    await context.read<TaskData>().getAllTasks();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -13,7 +28,7 @@ class TodoList extends StatelessWidget {
         return Dismissible(
           direction: DismissDirection.endToStart,
           onDismissed: (direction) {
-            context.read<TaskData>().deleteTask(index);
+            context.read<TaskData>().deleteTask(task);
             Scaffold.of(context).showSnackBar(
               SnackBar(
                 content: Text("'${task.title}' deleted"),
@@ -39,7 +54,7 @@ class TodoList extends StatelessWidget {
             trailing: Checkbox(
               value: task.isChecked,
               onChanged: (bool value) {
-                context.read<TaskData>().updateTask(index);
+                context.read<TaskData>().updateTask(task);
               },
             ),
           ),

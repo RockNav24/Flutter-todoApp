@@ -2,28 +2,36 @@ import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
 import 'package:todo_app/models/task.dart';
+import 'package:todo_app/sqflite_database.dart';
 
 class TaskData extends ChangeNotifier {
-  List<Task> _tasks = [
-    Task(title: 'Add a new Task'),
-  ];
+  DatabaseClass db = DatabaseClass();
+  List<Task> _tasks = [];
 
   UnmodifiableListView<Task> get tasks {
     return UnmodifiableListView(_tasks);
   }
 
-  void addNewTask(Task newTask) {
-    this._tasks.add(newTask);
+  void addNewTask(Task task) async {
+    this._tasks.add(await db.insertTask(task));
+    getAllTasks();
     notifyListeners();
   }
 
-  void deleteTask(int index) {
-    this._tasks.removeAt(index);
+  void deleteTask(Task task) async {
+    await db.deleteTask(task);
+    getAllTasks();
     notifyListeners();
   }
 
-  void updateTask(int index) {
-    this._tasks[index].toggleCheck();
+  void updateTask(Task task) async {
+    task.toggleCheck();
+    await db.updateTask(task);
+    notifyListeners();
+  }
+
+  Future<void> getAllTasks() async {
+    this._tasks = await db.getTasks();
     notifyListeners();
   }
 }

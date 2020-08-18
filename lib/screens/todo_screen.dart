@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/components/bottom_sheet_widget.dart';
 import 'package:todo_app/components/todo_list.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app/models/task_data.dart';
 
 class TodoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final double deviceHeight = MediaQuery.of(context).size.height;
-    final double deviceWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.lightBlueAccent,
@@ -55,7 +54,7 @@ class TodoScreen extends StatelessWidget {
                   height: 5,
                 ),
                 Text(
-                  '${TodoList.tasks.length} Tasks',
+                  '${context.watch<TaskData>().tasks.length} Tasks',
                   style: TextStyle(
                     color: Colors.white,
                   ),

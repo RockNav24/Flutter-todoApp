@@ -1,36 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app/models/task.dart';
+import 'package:todo_app/models/task_data.dart';
 
-class TodoList extends StatefulWidget {
-  static List<Task> tasks = [
-    Task(title: 'Play cricket'),
-    Task(title: 'Buy milk'),
-    Task(title: 'Call san'),
-  ];
-  @override
-  _TodoListState createState() => _TodoListState();
-}
-
-class _TodoListState extends State<TodoList> {
+class TodoList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: TodoList.tasks.length,
+      itemCount: context.watch<TaskData>().tasks.length,
       itemBuilder: (context, index) {
-        return CheckboxListTile(
-          title: Text(
-            TodoList.tasks[index].title,
-            style: TextStyle(
-                decoration: TodoList.tasks[index].isChecked
-                    ? TextDecoration.lineThrough
-                    : null),
-          ),
-          value: TodoList.tasks[index].isChecked,
-          onChanged: (bool value) {
-            setState(() {
-              TodoList.tasks[index].toggleCheck();
-            });
+        Task task = context.watch<TaskData>().tasks[index];
+        return Dismissible(
+          direction: DismissDirection.endToStart,
+          onDismissed: (direction) {
+            context.read<TaskData>().deleteTask(index);
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text("'${task.title}' deleted"),
+              ),
+            );
           },
+          key: ObjectKey(task.title),
+          background: Container(
+            color: Colors.red[600],
+            child: Icon(
+              Icons.delete,
+              color: Colors.white,
+              size: 30,
+            ),
+          ),
+          child: ListTile(
+            title: Text(
+              task.title,
+              style: TextStyle(
+                  decoration:
+                      task.isChecked ? TextDecoration.lineThrough : null),
+            ),
+            trailing: Checkbox(
+              value: task.isChecked,
+              onChanged: (bool value) {
+                context.read<TaskData>().updateTask(index);
+              },
+            ),
+          ),
         );
       },
     );

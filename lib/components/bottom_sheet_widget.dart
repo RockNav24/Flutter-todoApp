@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/components/todo_list.dart';
 import 'package:todo_app/models/task.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app/models/task_data.dart';
 
 class BottomSheetWidget extends StatelessWidget {
   @override
@@ -42,8 +43,16 @@ class BottomSheetWidget extends StatelessWidget {
                     newTask = value;
                   },
                   onSubmitted: (text) {
-                    TodoList.tasks.add(Task(title: newTask));
-                    Navigator.pop(context);
+                    if (text.isNotEmpty) {
+                      context.read<TaskData>().addNewTask(
+                            Task(
+                              title: newTask,
+                            ),
+                          );
+                      Navigator.pop(context);
+                    } else {
+                      Navigator.pop(context);
+                    }
                   },
                 ),
                 RaisedButton(
@@ -53,8 +62,16 @@ class BottomSheetWidget extends StatelessWidget {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
-                    TodoList.tasks.add(Task(title: newTask));
-                    Navigator.pop(context);
+                    if (newTask == null || newTask.isEmpty) {
+                      Navigator.pop(context);
+                    } else {
+                      context.read<TaskData>().addNewTask(
+                            Task(
+                              title: newTask,
+                            ),
+                          );
+                      Navigator.pop(context);
+                    }
                   },
                 ),
               ],
